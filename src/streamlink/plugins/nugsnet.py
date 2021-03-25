@@ -15,12 +15,11 @@ log = logging.getLogger(__name__)
 
 
 
-class NugsNetHDPlugin(Plugin):
+class NugsNet(Plugin):
     _url_re = re.compile(r'https?://(?:www\.)?nugs\.net')
     _m3u8_re = re.compile(r'''['"](http.+\.m3u8.*?)['"]''')
     _authed_re = re.compile( r'''<title>Login | nugs.net</title>''' )
     _verificationToken_re = re.compile( r'''.*?<input name="__RequestVerificationToken"[^>]*?value="([^"]+)".*''',  re.MULTILINE|re.DOTALL)
-
     TIME_SESSION = 60 * 60 * 24 * 30
 
     def __init__(self, url):
@@ -139,4 +138,4 @@ class NugsNetHDPlugin(Plugin):
 
         
 
-__plugin__ = NugsNetHDPlugin
+__plugin__ = NugsNet
