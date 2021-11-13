@@ -10,6 +10,8 @@ from streamlink.utils import update_scheme
 from streamlink.plugin import Plugin, PluginArgument, PluginArguments
 from streamlink.plugin.api import useragents
 from streamlink.stream import HLSStream
+from streamlink.stream import HTTPStream
+from streamlink.stream import RTMPStream
 from urllib.parse import quote
 
 log = logging.getLogger(__name__)
@@ -102,7 +104,6 @@ bt            """)
     def _get_streams(self):
 
         #return HLSStream.parse_variant_playlist(self.session, "https://d0bca9b68a812ed71b07e4247e1836c1.egress.mediapackage-vod.us-east-1.amazonaws.com/out/v1/b323210a4b514ee9be6ab7ced8ce0b65/8ffa49d6e66f45c89f1bff09e08a908f/4bb3c45cd2df4693bbead2a9c6201e58/index.m3u8" )
-
         
         if self.options.get("purge_credentials"):
             self.clear_cookies()
@@ -115,16 +116,8 @@ bt            """)
                       "and --nugsnet-password to set your email/password combination")
             return
 
-        streamUrl = self._login(email, password)
-        log.debug( "Streamurl " + str(streamUrl) )
-
-        return HLSStream.parse_variant_playlist(self.session, streamUrl)
-
-
-        stream = self._watch()
-        return stream
-
-    def _login(self, email, password):
+        #streamUrl = self._login(email, password)
+        #log.debug( "Streamurl " + str(streamUrl) )
         
         params = {
             'Input.Email': email,
@@ -203,9 +196,18 @@ bt            """)
                 log.debug( 'cookie name' + cookie['name'] )
                 self.session.http.cookies.set( cookie['name'], cookie['value'] )
             
-            streamUrl = "https://d227g91y7tnu85.cloudfront.net/out/v1/721b452e666448f8898613602c22928a/index.m3u"
+            #streamUrl = "https://d227g91y7tnu85.cloudfront.net/out/v1/721b452e666448f8898613602c22928a/index.m3u"
+                
+            streamUrl = streamUrl.replace( "blob:", "" )
+            #return HLSStream.parse_variant_playlist(self.session, streamUrl)
+                
+            streams = {}
+            stream = HTTPStream(self.session, streamUrl )
+            #stream = AkamaiHDStream(self.session, streamUrl )
+            name = "best"
+            streams[name] = stream
 
-            return streamUrl
+            return streams
 
 
 
